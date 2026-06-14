@@ -1,73 +1,96 @@
-# React + TypeScript + Vite
+# GPM IT Connect
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+GPM IT Connect is a full-stack academic portal for the Information Technology Department of Government Polytechnic Mumbai. It is designed as a final year diploma project and includes a role-based dashboard for students, faculty, admin, and HOD.
 
-Currently, two official plugins are available:
+## Implemented modules
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- JWT authentication with role-based access control
+- Student and staff dashboard
+- Attendance records and analytics
+- Timetable view
+- Notice board
+- Resource center
+- Internship and placement portal
+- Faculty directory
+- AI assistant endpoint with Gemini integration support
+- Seed data for demo accounts and sample records
 
-## React Compiler
+## Tech stack
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- Frontend: React, TypeScript, Vite, Material UI
+- Backend: Spring Boot, Spring Security, Spring Data JPA
+- Database: MySQL in Docker, H2 for local development fallback
+- Deployment: Docker, Docker Compose, Nginx
 
-## Expanding the ESLint configuration
+## Project structure
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```text
+.
+├── backend
+├── frontend
+├── docker-compose.yml
+├── GPM_IT_Connect_Project_Proposal.md
+└── README.md
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Demo accounts
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+- Student: `student@gpmitconnect.edu` / `student123`
+- Faculty: `faculty@gpmitconnect.edu` / `faculty123`
+- Admin: `admin@gpmitconnect.edu` / `admin123`
+- HOD: `hod@gpmitconnect.edu` / `hod123`
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## Run locally without Docker
+
+### Backend
+
+```bash
+cd backend
+mvn spring-boot:run
 ```
+
+The backend starts on `http://localhost:8080`.
+
+### Frontend
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+The frontend starts on `http://localhost:5173`.
+
+## Run with Docker
+
+```bash
+docker compose up --build
+```
+
+Services:
+
+- Frontend: `http://localhost:3000`
+- Backend API: `http://localhost:8080`
+- MySQL: `localhost:3306`
+
+## Gemini integration
+
+The AI assistant works in demo mode by default. To enable live Gemini responses, set `GEMINI_API_KEY` before starting the backend or Docker Compose.
+
+Example:
+
+```bash
+export GEMINI_API_KEY=your_api_key_here
+docker compose up --build
+```
+
+## Verified commands
+
+- `cd backend && mvn test`
+- `cd frontend && npm run build`
+
+## Notes
+
+- The backend uses H2 by default for quick local runs, so you can start developing immediately without MySQL.
+- Docker Compose switches the backend to MySQL automatically.
+- Seed data is inserted on first startup only.
