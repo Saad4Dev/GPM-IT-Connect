@@ -56,7 +56,7 @@ public class DataSeeder {
                     "9000000002", passwordEncoder);
             User faculty = createUser("Prof. Mehta", "faculty@gpmitconnect.edu", "faculty123", Role.FACULTY, null, null,
                     "9000000003", passwordEncoder);
-            User student = createUser("Aarav Patil", "student@gpmitconnect.edu", "student123", Role.STUDENT, "Final Year",
+            User student = createUser("Saad Shaikh", "student@gpmitconnect.edu", "student123", Role.STUDENT, "Final Year",
                     "A", "9000000004", passwordEncoder);
 
             userRepository.saveAll(List.of(admin, hod, faculty, student));
