@@ -250,7 +250,7 @@ const initialThreads: ThreadItem[] = [
     id: 1,
     title: 'How do we prepare for the DBMS viva?',
     subject: 'Database Systems',
-    author: 'Aarav Patil',
+    author: 'Saad Shaikh',
     replies: 8,
     tags: ['viva', 'dbms', 'revision'],
     updatedAt: '2026-06-11T11:20:00Z',
@@ -273,7 +273,7 @@ const initialLostFound: LostFoundItem[] = [
     type: 'Lost',
     location: 'Library reading room',
     contact: 'student@gpmitconnect.edu',
-    description: 'Blue lanyard card with Aarav Patil name printed on it.',
+    description: 'Blue lanyard card with Saad Shaikh name printed on it.',
     updatedAt: '2026-06-10T16:10:00Z',
   },
   {
@@ -538,7 +538,20 @@ export function DepartmentHubPage() {
                       <LinearProgress
                         variant="determinate"
                         value={progressItem.value}
-                        sx={{ mt: 1.5, height: 10, borderRadius: 999 }}
+                        sx={{
+                          mt: 1.5,
+                          height: 12,
+                          borderRadius: 999,
+                          bgcolor: 'rgba(226, 232, 240, 0.16)',
+                          boxShadow: 'inset 0 1px 2px rgba(0, 0, 0, 0.35)',
+                          '& .MuiLinearProgress-bar': {
+                            borderRadius: 999,
+                            background:
+                              'linear-gradient(90deg, #f8fafc 0%, #e2e8f0 48%, #ffffff 62%, #cbd5e1 100%)',
+                            boxShadow:
+                              '0 0 14px rgba(248, 250, 252, 0.26), inset 0 1px 0 rgba(255, 255, 255, 0.72)',
+                          },
+                        }}
                       />
                     </Box>
                   ))}

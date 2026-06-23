@@ -63,6 +63,18 @@ const theme = createTheme({
           paddingInline: 18,
           paddingBlock: 12,
           boxShadow: 'none',
+          color: '#f8fafc',
+          transition:
+            'transform 180ms ease, border-color 180ms ease, background 180ms ease, box-shadow 180ms ease, color 180ms ease',
+          '&:focus-visible': {
+            outline: '2px solid rgba(251, 191, 36, 0.78)',
+            outlineOffset: 3,
+          },
+          '&.Mui-disabled': {
+            color: 'rgba(226, 232, 240, 0.42)',
+            borderColor: 'rgba(226, 232, 240, 0.1)',
+            background: 'rgba(148, 163, 184, 0.06)',
+          },
         },
         contained: {
           background: 'linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%)',
@@ -71,14 +83,27 @@ const theme = createTheme({
           '&:hover': {
             background: 'linear-gradient(135deg, #ffd75f 0%, #fbbf24 100%)',
             boxShadow: '0 20px 40px rgba(251, 191, 36, 0.24)',
+            transform: 'translateY(-1px)',
           },
         },
         outlined: {
-          borderColor: 'rgba(255, 255, 255, 0.14)',
-          background: 'rgba(255, 255, 255, 0.03)',
+          color: '#e7eef9',
+          borderColor: 'rgba(231, 238, 249, 0.28)',
+          background: 'rgba(226, 232, 240, 0.07)',
+          boxShadow: 'inset 0 1px 0 rgba(255, 255, 255, 0.06)',
           '&:hover': {
-            borderColor: 'rgba(251, 191, 36, 0.28)',
-            background: 'rgba(255, 255, 255, 0.06)',
+            color: '#ffffff',
+            borderColor: 'rgba(251, 191, 36, 0.62)',
+            background: 'rgba(251, 191, 36, 0.12)',
+            boxShadow: '0 14px 30px rgba(0, 0, 0, 0.22)',
+            transform: 'translateY(-1px)',
+          },
+        },
+        text: {
+          color: '#dbe7f7',
+          '&:hover': {
+            color: '#ffffff',
+            background: 'rgba(255, 255, 255, 0.07)',
           },
         },
       },

@@ -98,7 +98,7 @@ function SidebarContent({
           {!compact ? (
             <div className="min-w-0">
               <p className="truncate text-base font-semibold text-white">
-                {user?.fullName || 'Aarav Patil'}
+                {user?.fullName || 'Saad Shaikh'}
               </p>
               <p className="truncate text-sm text-slate-400">{user?.email}</p>
             </div>

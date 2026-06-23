@@ -14,7 +14,7 @@ export const demoAccounts: DemoAccount[] = [
     password: 'student123',
     user: {
       id: 101,
-      fullName: 'Aarav Patil',
+      fullName: 'Saad Shaikh',
       email: 'student@gpmitconnect.edu',
       role: 'STUDENT',
       department: 'Information Technology',
