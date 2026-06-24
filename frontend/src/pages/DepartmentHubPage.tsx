@@ -1,4 +1,5 @@
 import { useState, type SyntheticEvent } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
 import { Link as RouterLink } from 'react-router-dom'
 import {
   AssignmentTurnedIn,
@@ -16,11 +17,8 @@ import {
   Button,
   Chip,
   Grid,
-  LinearProgress,
   MenuItem,
   Stack,
-  Tab,
-  Tabs,
   TextField,
   Typography,
 } from '@mui/material'
@@ -501,68 +499,124 @@ export function DepartmentHubPage() {
         </Grid>
       </Panel>
 
-      <Tabs
-        value={section}
-        onChange={handleSectionChange}
-        variant="scrollable"
-        scrollButtons="auto"
-        sx={{ borderBottom: '1px solid rgba(255,255,255,0.08)' }}
+      {/* Animated tab bar with Framer Motion sliding indicator */}
+      <Box
+        sx={{
+          display: 'flex',
+          gap: 0,
+          borderBottom: '1px solid rgba(255,255,255,0.08)',
+          overflowX: 'auto',
+          pb: 0,
+        }}
+        role="tablist"
       >
-        <Tab value="tracker" label="Academic tracker" />
-        <Tab value="projects" label="Project repository" />
-        <Tab value="network" label="Network" />
-        <Tab value="community" label="Community board" />
-      </Tabs>
+        {([
+          { key: 'tracker',   label: 'Academic tracker' },
+          { key: 'projects',  label: 'Project repository' },
+          { key: 'network',   label: 'Network' },
+          { key: 'community', label: 'Community board' },
+        ] as const).map((tab) => {
+          const isActive = section === tab.key
+          return (
+            <Box
+              key={tab.key}
+              role="tab"
+              aria-selected={isActive}
+              onClick={() => handleSectionChange({} as SyntheticEvent, tab.key)}
+              sx={{
+                position: 'relative',
+                px: 2.5,
+                py: 1.5,
+                cursor: 'pointer',
+                whiteSpace: 'nowrap',
+                fontSize: 14,
+                fontWeight: isActive ? 700 : 500,
+                color: isActive ? '#fff' : 'rgba(255,255,255,0.45)',
+                transition: 'color 0.2s',
+                userSelect: 'none',
+                '&:hover': { color: 'rgba(255,255,255,0.8)' },
+              }}
+            >
+              {tab.label}
+              {isActive ? (
+                <motion.div
+                  layoutId="hub-tab-indicator"
+                  style={{
+                    position: 'absolute',
+                    bottom: -1,
+                    left: 0,
+                    right: 0,
+                    height: 2,
+                    borderRadius: 2,
+                    background: 'linear-gradient(90deg, #60a5fa, #a78bfa)',
+                  }}
+                  transition={{ type: 'spring', stiffness: 500, damping: 38 }}
+                />
+              ) : null}
+            </Box>
+          )
+        })}
+      </Box>
 
-      {section === 'tracker' ? (
-        <Grid container spacing={2.5}>
-          {trackerItems.map((item) => (
-            <Grid key={item.subject} size={{ xs: 12, lg: 6 }}>
-              <Panel
-                title={item.subject}
-                subtitle={`Faculty: ${item.faculty}`}
-                action={<Chip label={item.status} color="secondary" size="small" />}
-              >
-                <Stack spacing={2}>
-                  {[
-                    { label: 'Attendance', value: item.attendance },
-                    { label: 'Internal marks', value: item.internal },
-                    { label: 'Practicals', value: item.practical },
-                    { label: 'Assignments', value: item.assignments },
-                  ].map((progressItem) => (
-                    <Box key={progressItem.label} className="list-card">
-                      <Stack direction="row" sx={{ justifyContent: 'space-between', gap: 2 }}>
-                        <Typography sx={{ fontWeight: 700 }}>{progressItem.label}</Typography>
-                        <Typography color="text.secondary">{progressItem.value}%</Typography>
-                      </Stack>
-                      <LinearProgress
-                        variant="determinate"
-                        value={progressItem.value}
-                        sx={{
-                          mt: 1.5,
-                          height: 12,
-                          borderRadius: 999,
-                          bgcolor: 'rgba(226, 232, 240, 0.16)',
-                          boxShadow: 'inset 0 1px 2px rgba(0, 0, 0, 0.35)',
-                          '& .MuiLinearProgress-bar': {
-                            borderRadius: 999,
-                            background:
-                              'linear-gradient(90deg, #f8fafc 0%, #e2e8f0 48%, #ffffff 62%, #cbd5e1 100%)',
-                            boxShadow:
-                              '0 0 14px rgba(248, 250, 252, 0.26), inset 0 1px 0 rgba(255, 255, 255, 0.72)',
-                          },
-                        }}
-                      />
-                    </Box>
-                  ))}
-                </Stack>
-              </Panel>
+      <AnimatePresence mode="wait">
+        {section === 'tracker' ? (
+          <motion.div
+            key="tracker"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.25 }}
+          >
+            <Grid container spacing={2.5}>
+              {trackerItems.map((item) => (
+                <Grid key={item.subject} size={{ xs: 12, lg: 6 }}>
+                  <Panel
+                    title={item.subject}
+                    subtitle={`Faculty: ${item.faculty}`}
+                    action={<Chip label={item.status} color="secondary" size="small" />}
+                  >
+                    <Stack spacing={2}>
+                      {[
+                        { label: 'Attendance', value: item.attendance },
+                        { label: 'Internal marks', value: item.internal },
+                        { label: 'Practicals', value: item.practical },
+                        { label: 'Assignments', value: item.assignments },
+                      ].map((progressItem) => (
+                        <Box key={progressItem.label} className="list-card">
+                          <Stack direction="row" sx={{ justifyContent: 'space-between', gap: 2 }}>
+                            <Typography sx={{ fontWeight: 700 }}>{progressItem.label}</Typography>
+                            <Typography color="text.secondary">{progressItem.value}%</Typography>
+                          </Stack>
+                          <Box sx={{ position: 'relative', mt: 1.5, height: 12, borderRadius: 999, bgcolor: 'rgba(226,232,240,0.16)', overflow: 'hidden', boxShadow: 'inset 0 1px 2px rgba(0,0,0,0.35)' }}>
+                            <motion.div
+                              initial={{ width: 0 }}
+                              animate={{ width: `${progressItem.value}%` }}
+                              transition={{ duration: 0.9, ease: [0.34, 1.56, 0.64, 1] }}
+                              style={{
+                                position: 'absolute',
+                                top: 0,
+                                left: 0,
+                                height: '100%',
+                                borderRadius: 999,
+                                background: 'linear-gradient(90deg, #f8fafc 0%, #e2e8f0 48%, #ffffff 62%, #cbd5e1 100%)',
+                                boxShadow: '0 0 14px rgba(248,250,252,0.26), inset 0 1px 0 rgba(255,255,255,0.72)',
+                              }}
+                            />
+                          </Box>
+                        </Box>
+                      ))}
+                    </Stack>
+                  </Panel>
+                </Grid>
+              ))}
             </Grid>
-          ))}
-        </Grid>
-      ) : null}
+          </motion.div>
+        ) : null}
+      </AnimatePresence>
 
-      {section === 'projects' ? (
+      <AnimatePresence mode="wait">
+        {section === 'projects' ? (
+          <motion.div key="projects" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} transition={{ duration: 0.25 }}>
         <Grid container spacing={2.5}>
           <Grid size={{ xs: 12, lg: 4 }}>
             <Panel
@@ -663,10 +717,14 @@ export function DepartmentHubPage() {
               </Stack>
             </Panel>
           </Grid>
-        </Grid>
-      ) : null}
+          </Grid>
+          </motion.div>
+        ) : null}
+      </AnimatePresence>
 
-      {section === 'network' ? (
+      <AnimatePresence mode="wait">
+        {section === 'network' ? (
+          <motion.div key="network" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} transition={{ duration: 0.25 }}>
         <Grid container spacing={2.5}>
           <Grid size={{ xs: 12, lg: 6 }}>
             <Panel title="Alumni network" subtitle="Guidance and mentorship from passed-out batches">
@@ -714,10 +772,14 @@ export function DepartmentHubPage() {
               </Stack>
             </Panel>
           </Grid>
-        </Grid>
-      ) : null}
+          </Grid>
+          </motion.div>
+        ) : null}
+      </AnimatePresence>
 
-      {section === 'community' ? (
+      <AnimatePresence mode="wait">
+        {section === 'community' ? (
+          <motion.div key="community" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} transition={{ duration: 0.25 }}>
         <Grid container spacing={2.5}>
           <Grid size={{ xs: 12, lg: 6 }}>
             <Panel title="Discussion forum" subtitle="Post doubts and share subject-wise solutions">
@@ -863,8 +925,10 @@ export function DepartmentHubPage() {
               </Stack>
             </Panel>
           </Grid>
-        </Grid>
-      ) : null}
+          </Grid>
+          </motion.div>
+        ) : null}
+      </AnimatePresence>
     </Stack>
   )
 }

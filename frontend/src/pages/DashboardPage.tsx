@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Link as RouterLink } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { Alert, Button, Chip, Grid, Stack, Typography } from '@mui/material'
@@ -11,6 +11,10 @@ import {
   CalendarDays,
   CircleGauge,
   Sparkles,
+  UserRound,
+  Layers3,
+  LibraryBig,
+  ChartColumnBig,
 } from 'lucide-react'
 
 import { MetricCard } from '../components/MetricCard'
@@ -81,6 +85,64 @@ export function DashboardPage() {
     void load()
   }, [])
 
+  const liveLecture = useMemo(() => {
+    if (!summary || !summary.todaysSchedule) return null
+    const now = new Date()
+    const currentMinutes = now.getHours() * 60 + now.getMinutes()
+
+    for (const lecture of summary.todaysSchedule) {
+      try {
+        const [startStr, endStr] = lecture.slot.split(' - ')
+        const [startH, startM] = startStr.split(':').map(Number)
+        const [endH, endM] = endStr.split(':').map(Number)
+        const startMinutes = startH * 60 + startM
+        const endMinutes = endH * 60 + endM
+
+        if (currentMinutes >= startMinutes && currentMinutes < endMinutes) {
+          const progress = ((currentMinutes - startMinutes) / (endMinutes - startMinutes)) * 100
+          const minutesLeft = endMinutes - currentMinutes
+          return {
+            ...lecture,
+            progress,
+            minutesLeft,
+          }
+        }
+      } catch {
+        // Ignore
+      }
+    }
+    return null
+  }, [summary])
+
+  const nextLecture = useMemo(() => {
+    if (!summary || !summary.todaysSchedule) return null
+    const now = new Date()
+    const currentMinutes = now.getHours() * 60 + now.getMinutes()
+
+    let closest = null
+    let minDiff = Infinity
+
+    for (const lecture of summary.todaysSchedule) {
+      try {
+        const [startStr] = lecture.slot.split(' - ')
+        const [startH, startM] = startStr.split(':').map(Number)
+        const startMinutes = startH * 60 + startM
+
+        const diff = startMinutes - currentMinutes
+        if (diff > 0 && diff < minDiff) {
+          minDiff = diff
+          closest = {
+            ...lecture,
+            minutesToStart: diff,
+          }
+        }
+      } catch {
+        // Ignore
+      }
+    }
+    return closest
+  }, [summary])
+
   if (loading) {
     return <DashboardSkeleton />
   }
@@ -120,6 +182,83 @@ export function DashboardPage() {
           </>
         }
       />
+
+      {summary.attendancePercentage < 75 ? (
+        <motion.div
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="rounded-[24px] border border-rose-500/25 bg-rose-500/5 p-5 flex items-start sm:items-center gap-4 shadow-[0_12px_40px_rgba(239,68,68,0.06)]"
+        >
+          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-rose-500/10 text-rose-400">
+            <CircleGauge size={22} className="animate-pulse" />
+          </div>
+          <div className="min-w-0">
+            <h4 className="text-base font-bold text-white leading-snug">Attendance Alert</h4>
+            <p className="text-sm text-rose-300/90 leading-relaxed mt-0.5">
+              Your overall attendance of <span className="font-extrabold text-rose-200">{summary.attendancePercentage}%</span> is currently below the mandatory 75% department requirement. Please check your subject analytics or consult your coordinator.
+            </p>
+          </div>
+        </motion.div>
+      ) : null}
+
+      {liveLecture ? (
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="portal-card relative overflow-hidden p-6 border-emerald-500/25 bg-emerald-500/[0.03] shadow-[0_20px_50px_rgba(16,185,129,0.06)]"
+        >
+          <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div className="space-y-1">
+              <div className="flex items-center gap-2">
+                <span className="live-badge">
+                  <span className="live-dot" />
+                  Live Now
+                </span>
+                <span className="text-xs text-slate-400">Ongoing Class</span>
+              </div>
+              <h3 className="text-2xl font-bold text-white tracking-tight">{liveLecture.title}</h3>
+              <p className="text-sm text-slate-300">
+                Time: <span className="font-semibold text-white">{liveLecture.slot}</span> · Room: <span className="font-semibold text-emerald-400">{liveLecture.room}</span> · Faculty: {liveLecture.facultyName}
+              </p>
+            </div>
+            <div className="flex flex-col items-end gap-1.5 md:min-w-[240px]">
+              <div className="flex justify-between w-full text-xs">
+                <span className="text-slate-400">Lecture Timeline</span>
+                <span className="text-emerald-400 font-semibold">{liveLecture.minutesLeft} mins remaining</span>
+              </div>
+              <div className="w-full h-2 rounded-full bg-slate-800/80 overflow-hidden">
+                <div 
+                  className="h-full bg-gradient-to-r from-emerald-500 to-emerald-400 rounded-full transition-all duration-1000"
+                  style={{ width: `${liveLecture.progress}%` }}
+                />
+              </div>
+            </div>
+          </div>
+        </motion.div>
+      ) : nextLecture ? (
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="portal-card relative overflow-hidden p-6 border-amber-500/25 bg-amber-500/[0.01]"
+        >
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div className="space-y-1">
+              <div className="flex items-center gap-2">
+                <span className="portal-accent-badge">Next Lecture</span>
+                <span className="text-xs text-slate-400">Starts in {nextLecture.minutesToStart} mins</span>
+              </div>
+              <h3 className="text-xl font-bold text-white tracking-tight">{nextLecture.title}</h3>
+              <p className="text-sm text-slate-300">
+                Time: <span className="font-semibold text-white">{nextLecture.slot}</span> · Room: <span className="font-semibold text-amber-300">{nextLecture.room}</span> · {nextLecture.facultyName}
+              </p>
+            </div>
+            <div>
+              <span className="text-xs text-amber-300/70 uppercase tracking-widest font-bold">Today's Schedule</span>
+            </div>
+          </div>
+        </motion.div>
+      ) : null}
 
       <motion.section
         initial={{ opacity: 0, y: 16 }}
@@ -187,16 +326,43 @@ export function DashboardPage() {
                 <p className="mt-1 text-sm text-slate-400">Current semester health snapshot</p>
               </div>
 
-              <div
-                className="relative flex h-28 w-28 items-center justify-center rounded-full"
-                style={{
-                  background: `conic-gradient(#fbbf24 ${summary.attendancePercentage}%, rgba(255,255,255,0.08) 0)`,
-                }}
-              >
-                <div className="flex h-20 w-20 items-center justify-center rounded-full border border-white/10 bg-slate-950 text-center">
-                  <div>
-                    <p className="text-sm font-semibold text-white">{summary.attendancePercentage}%</p>
-                    <p className="text-[0.65rem] uppercase tracking-[0.25em] text-slate-400">present</p>
+              <div className="relative h-28 w-28 shrink-0">
+                <svg width="112" height="112" viewBox="0 0 120 120" className="-rotate-90">
+                  <defs>
+                    <linearGradient id="attendanceGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" stopColor="#fbbf24" />
+                      <stop offset="100%" stopColor="#d97706" />
+                    </linearGradient>
+                    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+                      <feGaussianBlur stdDeviation="3" result="blur" />
+                      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+                    </filter>
+                  </defs>
+                  <circle
+                    cx="60"
+                    cy="60"
+                    r="50"
+                    fill="transparent"
+                    stroke="rgba(255,255,255,0.05)"
+                    strokeWidth="8"
+                  />
+                  <circle
+                    cx="60"
+                    cy="60"
+                    r="50"
+                    fill="transparent"
+                    stroke="url(#attendanceGrad)"
+                    strokeWidth="8"
+                    strokeDasharray={2 * Math.PI * 50}
+                    strokeDashoffset={2 * Math.PI * 50 * (1 - summary.attendancePercentage / 100)}
+                    strokeLinecap="round"
+                    filter="url(#glow)"
+                  />
+                </svg>
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="text-center">
+                    <p className="text-lg font-extrabold text-white leading-none">{summary.attendancePercentage}%</p>
+                    <p className="text-[0.55rem] uppercase tracking-[0.2em] text-amber-300 font-semibold mt-1">Present</p>
                   </div>
                 </div>
               </div>
@@ -257,23 +423,31 @@ export function DashboardPage() {
         title="Quick access"
         subtitle="Jump to the pages most students and faculty use every day"
       >
-        <Stack direction="row" spacing={1.5} useFlexGap sx={{ flexWrap: 'wrap' }}>
-          <Button component={RouterLink} to="/profile" variant="outlined">
-            My profile
-          </Button>
-          <Button component={RouterLink} to="/hub" variant="outlined">
-            Department hub
-          </Button>
-          <Button component={RouterLink} to="/attendance" variant="outlined">
-            Attendance
-          </Button>
-          <Button component={RouterLink} to="/resources" variant="outlined">
-            Resources
-          </Button>
-          <Button component={RouterLink} to="/ai-assistant" variant="outlined">
-            AI assistant
-          </Button>
-        </Stack>
+        <Grid container spacing={2}>
+          {[
+            { label: 'My profile', desc: 'Manage your contact details and roles', path: '/profile', color: 'from-amber-500/10 to-amber-500/5 border-amber-300/10', icon: <UserRound className="text-amber-300" size={22} /> },
+            { label: 'Department hub', desc: 'Mini projects, alumni, forum, lost & found', path: '/hub', color: 'from-sky-500/10 to-sky-500/5 border-sky-300/10', icon: <Layers3 className="text-sky-300" size={22} /> },
+            { label: 'Attendance tracker', desc: 'Track your attendance and classes', path: '/attendance', color: 'from-emerald-500/10 to-emerald-500/5 border-emerald-300/10', icon: <ChartColumnBig className="text-emerald-300" size={22} /> },
+            { label: 'Learning resources', desc: 'Study notes, practical manuals, files', path: '/resources', color: 'from-violet-500/10 to-violet-500/5 border-violet-300/10', icon: <LibraryBig className="text-violet-300" size={22} /> },
+          ].map((item) => (
+            <Grid key={item.path} size={{ xs: 12, sm: 6, md: 3 }}>
+              <motion.div whileHover={{ y: -4 }} whileTap={{ scale: 0.985 }} className="h-full">
+                <RouterLink to={item.path} className={`flex h-full flex-col justify-between portal-card p-5 border ${item.color.split(' ')[2]} bg-gradient-to-br ${item.color.split(' ')[0]} ${item.color.split(' ')[1]}`}>
+                  <div>
+                    <div className="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-white/[0.04] border border-white/5 mb-3.5">
+                      {item.icon}
+                    </div>
+                    <h4 className="text-base font-bold text-white mb-1">{item.label}</h4>
+                    <p className="text-xs text-slate-400 leading-relaxed">{item.desc}</p>
+                  </div>
+                  <div className="mt-4 flex items-center justify-end text-xs font-semibold text-amber-300/80 gap-1">
+                    Open page <ArrowRight size={13} />
+                  </div>
+                </RouterLink>
+              </motion.div>
+            </Grid>
+          ))}
+        </Grid>
       </Panel>
 
       <Grid container spacing={2.5}>

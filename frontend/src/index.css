@@ -88,6 +88,11 @@ body::after {
   color: #fffaf0;
 }
 
+@keyframes blink-cursor {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
 a {
   color: inherit;
   text-decoration: none;
@@ -317,4 +322,229 @@ select {
     min-height: 46vh;
   }
 }
+
+/* ==========================================
+   GPM IT CONNECT - PREMIUM GLASSMORPHISM
+   ========================================== */
+
+/* Cursor glow & card elevation hover effects */
+.portal-card, .list-card, .metric-card, .credential-card {
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.25s ease, box-shadow 0.25s ease, background-color 0.25s ease !important;
+}
+
+.portal-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(251, 191, 36, 0.3) !important;
+  box-shadow: 0 35px 80px rgba(0, 0, 0, 0.5), 0 0 50px rgba(251, 191, 36, 0.08) !important;
+}
+
+.list-card:hover {
+  transform: translateY(-3px);
+  border-color: rgba(251, 191, 36, 0.3) !important;
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.4), 0 0 30px rgba(251, 191, 36, 0.05) !important;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.03)) !important;
+}
+
+/* Blinking status dot animation */
+@keyframes status-pulse-green {
+  0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.5); }
+  70% { box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+}
+
+@keyframes status-pulse-red {
+  0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.5); }
+  70% { box-shadow: 0 0 0 6px rgba(239, 68, 68, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+}
+
+@keyframes status-pulse-amber {
+  0% { box-shadow: 0 0 0 0 rgba(251, 191, 36, 0.5); }
+  70% { box-shadow: 0 0 0 6px rgba(251, 191, 36, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(251, 191, 36, 0); }
+}
+
+.status-pill::before {
+  content: '';
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  margin-right: 8px;
+  flex-shrink: 0;
+}
+
+.status-present::before {
+  background-color: #10b981;
+  animation: status-pulse-green 2s infinite;
+}
+
+.status-absent::before {
+  background-color: #ef4444;
+  animation: status-pulse-red 2s infinite;
+}
+
+.status-late::before {
+  background-color: #fbbf24;
+  animation: status-pulse-amber 2s infinite;
+}
+
+/* Material UI Overrides for Dark Glassmorphism */
+.MuiOutlinedInput-root {
+  background: rgba(255, 255, 255, 0.02) !important;
+  backdrop-filter: blur(12px) !important;
+  border-radius: 18px !important;
+  color: var(--text) !important;
+  transition: background-color 0.2s ease, box-shadow 0.2s ease !important;
+}
+
+.MuiOutlinedInput-root:hover {
+  background: rgba(255, 255, 255, 0.04) !important;
+}
+
+.MuiOutlinedInput-root.Mui-focused {
+  background: rgba(255, 255, 255, 0.05) !important;
+  box-shadow: 0 0 0 2px rgba(251, 191, 36, 0.15) !important;
+}
+
+.MuiOutlinedInput-notchedOutline {
+  border-color: rgba(255, 255, 255, 0.08) !important;
+  border-radius: 18px !important;
+  transition: border-color 0.2s ease !important;
+}
+
+.MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
+  border-color: rgba(251, 191, 36, 0.25) !important;
+}
+
+.MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
+  border-color: var(--accent) !important;
+  border-width: 1.5px !important;
+}
+
+.MuiFormLabel-root, .MuiInputLabel-root {
+  color: var(--muted) !important;
+  font-size: 0.95rem !important;
+}
+
+.MuiFormLabel-root.Mui-focused, .MuiInputLabel-root.Mui-focused {
+  color: var(--accent) !important;
+}
+
+.MuiAutocomplete-inputRoot {
+  padding: 6px 12px !important;
+}
+
+/* Premium Buttons overrides */
+.MuiButton-root {
+  text-transform: none !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.01em !important;
+}
+
+.MuiButton-contained {
+  background: linear-gradient(135deg, var(--accent) 0%, #d97706 100%) !important;
+  color: #050a14 !important;
+  font-weight: 700 !important;
+  border-radius: 18px !important;
+  padding: 10px 24px !important;
+  box-shadow: 0 10px 22px -6px rgba(251, 191, 36, 0.26) !important;
+  transition: transform 0.2s ease, box-shadow 0.2s ease !important;
+}
+
+.MuiButton-contained:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 15px 30px -6px rgba(251, 191, 36, 0.38) !important;
+}
+
+.MuiButton-contained:active {
+  transform: translateY(0) !important;
+}
+
+.MuiButton-outlined {
+  border-color: rgba(255, 255, 255, 0.1) !important;
+  color: var(--text) !important;
+  border-radius: 18px !important;
+  padding: 10px 24px !important;
+  background: rgba(255, 255, 255, 0.01) !important;
+  backdrop-filter: blur(8px) !important;
+  transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.2s ease !important;
+}
+
+.MuiButton-outlined:hover {
+  background: rgba(255, 255, 255, 0.05) !important;
+  border-color: rgba(251, 191, 36, 0.3) !important;
+  transform: translateY(-2px) !important;
+}
+
+.MuiButton-outlined:active {
+  transform: translateY(0) !important;
+}
+
+/* Popover & Select Menu Options Overrides */
+.MuiPopover-paper, .MuiMenu-paper {
+  background: rgba(6, 12, 23, 0.95) !important;
+  backdrop-filter: blur(24px) saturate(150%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-radius: 20px !important;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.5) !important;
+  padding: 4px !important;
+}
+
+.MuiMenuItem-root {
+  color: var(--text) !important;
+  border-radius: 12px !important;
+  margin: 3px 6px !important;
+  padding: 8px 16px !important;
+  font-size: 0.9rem !important;
+  transition: background-color 0.15s ease, color 0.15s ease !important;
+}
+
+.MuiMenuItem-root:hover {
+  background: rgba(251, 191, 36, 0.12) !important;
+  color: #ffffff !important;
+}
+
+.MuiMenuItem-root.Mui-selected {
+  background: rgba(251, 191, 36, 0.2) !important;
+  color: #ffffff !important;
+  font-weight: 600 !important;
+}
+
+.MuiMenuItem-root.Mui-selected:hover {
+  background: rgba(251, 191, 36, 0.26) !important;
+}
+
+/* Glowing text classes */
+.percentage-text {
+  font-size: 1.15rem !important;
+  font-weight: 700 !important;
+  color: var(--accent) !important;
+  text-shadow: 0 0 10px rgba(251, 191, 36, 0.25);
+}
+
+.live-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(16, 185, 129, 0.14) !important;
+  border: 1px solid rgba(16, 185, 129, 0.25) !important;
+  color: #10b981 !important;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.7rem;
+  padding: 3px 9px;
+  border-radius: 8px;
+}
+
+.live-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: #10b981;
+  box-shadow: 0 0 8px #10b981;
+  animation: status-pulse-green 1.5s infinite;
+}
+
 

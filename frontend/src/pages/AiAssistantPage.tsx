@@ -55,6 +55,47 @@ function TypingIndicator() {
   )
 }
 
+/* Typewriter component — types out text one character at a time */
+function TypewriterText({ text, speed = 14 }: { text: string; speed?: number }) {
+  const [displayed, setDisplayed] = useState('')
+  const [done, setDone] = useState(false)
+
+  useEffect(() => {
+    setDisplayed('')
+    setDone(false)
+    if (!text) return
+    let i = 0
+    const interval = setInterval(() => {
+      i++
+      setDisplayed(text.slice(0, i))
+      if (i >= text.length) {
+        clearInterval(interval)
+        setDone(true)
+      }
+    }, speed)
+    return () => clearInterval(interval)
+  }, [text, speed])
+
+  return (
+    <p className="whitespace-pre-wrap text-sm leading-7">
+      {displayed}
+      {!done && (
+        <span
+          style={{
+            display: 'inline-block',
+            width: 2,
+            height: '1em',
+            background: '#fbbf24',
+            marginLeft: 2,
+            verticalAlign: 'text-bottom',
+            animation: 'blink-cursor 0.7s steps(1) infinite',
+          }}
+        />
+      )}
+    </p>
+  )
+}
+
 export function AiAssistantPage() {
   const [prompt, setPrompt] = useState(promptSuggestions[0])
   const [messages, setMessages] = useState<ChatMessage[]>([
@@ -308,7 +349,11 @@ export function AiAssistantPage() {
                           : 'rounded-[26px] rounded-tl-md border border-white/10 bg-white/[0.04] px-4 py-3 text-slate-100'
                       }
                     >
-                      <p className="whitespace-pre-wrap text-sm leading-7">{message.content}</p>
+                      {message.role === 'user' ? (
+                        <p className="whitespace-pre-wrap text-sm leading-7">{message.content}</p>
+                      ) : (
+                        <TypewriterText text={message.content} speed={12} />
+                      )}
                       <div className="mt-2 flex items-center justify-between gap-3 text-[0.65rem] uppercase tracking-[0.24em] text-slate-400">
                         <span>{message.role === 'user' ? 'You' : 'GPM AI'}</span>
                         <span>{new Date(message.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
